@@ -9,6 +9,11 @@ FurnitureCMS is a straightforward Content Management System (CMS) built with Nod
 - **User Registration:** Simple registration process, allowing users to create accounts quickly.
 
 - **Furniture Management:** An intuitive interface on the index page facilitates the addition and updating of furniture items in the connected MySQL database.
+
+- **Password Visibility Toggle:** Enhances user experience by allowing the show/hide of password input.
+
+- **Secure Navigation Blocking:** Prevents unauthorized access by redirecting users to `index.html` if an active session is detected.
+
 ## Getting Started
 ### Installation
 

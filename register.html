@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="styles/register_style.css">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+
+<body>
+    <div class="login">
+        <form action="/register" method="post" class="login__form">
+            <h1 class="login__title">Register</h1>
+            <div class="login__content">
+                <div class="login__box">
+                    <i class="ri-user-3-line login__icon"></i>
+                    <div class="login__box-input username-container">
+                        <input type="text" name="username" id="username" class="login__input" required placeholder=" ">
+                        <label for="username" class="login__label">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20" width="18"
+                                viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+                                <path
+                                    d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
+                            </svg>
+                            Username</label>
+                    </div>
+                </div>
+                <div class="login__box">
+                    <i class="ri-lock-2-line login__icon"></i>
+                    <div class="login__box-input password-container ">
+                        <input type="password" name="password" id="password" class="login__input" required
+                            placeholder=" ">
+                        <label for="password" class="login__label">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20" width="18"
+                                viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+                                <path
+                                    d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" />
+                            </svg>Password</label>
+                        <i class="toggle-password fas fa-eye"></i>
+                    </div>
+                </div>
+                <div class="login__box">
+                    <i class="ri-lock-2-line login__icon"></i>
+                    <div class="login__box-input password-container ">
+                        <input type="password" name="confirm_password" id="confirm_password" class="login__input"
+                            required placeholder=" ">
+                        <label for="confirm_password" class="login__label">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20" width="18"
+                                viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+                                <path
+                                    d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" />
+                            </svg>Password</label>
+                        <i class="toggle-password fas fa-eye"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Register</button>
+
+            </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOMContentLoaded event fired');
+            const form = document.querySelector('.login__form');
+            form.classList.add('show');
+            console.log('Added show class to form');
+        });
+
+        document.addEventListener('click', e => {
+
+            if (e.target.classList.contains('toggle-password')) {
+
+                element = e.target.closest('.password-container')
+                if (element.querySelector('input').type === 'password') {
+                    element.querySelector('input').type = 'text';
+                    element.querySelector('.toggle-password').classList.remove('fa-eye');
+                    element.querySelector('.toggle-password').classList.add('fa-eye-slash');
+                } else {
+                    element.querySelector('input').type = 'password';
+                    element.querySelector('.toggle-password').classList.remove('fa-eye-slash');
+                    element.querySelector('.toggle-password').classList.add('fa-eye');
+                }
+            }
+        }, true)
+        async function handleFormRegistration(e) {
+            e.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+            var storedUser = localStorage.getItem("currentUser")
+
+            // We test first if there is an active user on localstorage
+            if (password !== confirmPassword) {
+                
+                alert("Passwords do not match. Please try again.");
+                return false;
+              
+            }else if(storedUser){
+               
+                alert("Login failed, user is active please press OK to get back to index.html", window.location.href = 'http://localhost:3000/index.html')
+                return false;
+            }
+            
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password, confirmPassword }),
+                });
+
+                if (response.ok) {
+                    // Login successful, redirect to index.html or perform other actions
+                    localStorage.setItem('currentUser', JSON.stringify(username));
+                    window.location.href = '/index.html';
+                } else if (response.status === 400) {
+                    alert('Passwords do not match. Please try again.')
+                    window.localStorage.clear();
+
+                } else if (response.status === 409) {
+                    alert('A user already exists with that username!!');
+                    window.localStorage.clear()
+
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+            }
+        }
+        document.addEventListener('submit', handleFormRegistration)
+
+    </script>
+
+</body>
+
+</html>

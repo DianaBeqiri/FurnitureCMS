@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="styles/update_form.css">
+</head>
+
+<body>
+    <div id="header">
+
+    </div>
+    <div class="login">
+
+        <form action="/update" method="post" class="login__form">
+            <h1 class="login__title">Update/Insert data</h1>
+            <div class="login__content">
+                <div class="login__box">
+                    <i class="ri-user-3-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="text" name="name" id="name" class="login__input" required placeholder=" ">
+                        <label for="name" class="login__label">Name</label>
+                    </div>
+                </div>
+                <div class="login__box">
+                    <i class="ri-lock-2-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="text" name="description" id="description" class="login__input" required
+                            placeholder=" ">
+                        <label for="description" class="login__label">Description</label>
+                    </div>
+                </div>
+                <div class="login__box">
+                    <i class="ri-link-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="color" name="color" id="color" class="login__input" required placeholder=" ">
+                        <label for="color" class="login__label">Color:</label>
+                    </div>
+                </div>
+                <div class="login__box">
+                    <i class="ri-link-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="text" name="image_url" id="image_url" class="login__input" required
+                            placeholder=" ">
+                        <label for="image_url" class="login__label">Image Link</label>
+                    </div>
+                </div>
+                <!-- <div class="login__box">
+                    <i class="ri-link-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="text" name="img" id="img" class="login__input"  >
+                        <label for="img" class="login__label">Image Link</label>
+                    </div>
+                </div> -->
+
+                <div class="login__box">
+                    <i class="ri-link-line login__icon"></i>
+                    <div class="login__box-input">
+                        <input type="text" name="model_url" id="model_url" class="login__input" required
+                            placeholder=" ">
+                        <label for="model_url" class="login__label">Model Link</label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="login__button">Submit</button>
+            <!-- <input type="submit" value="Submit" class="login__button"> -->
+        </form>
+    </div>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // ===========Transition part===========//
+            const form = document.querySelector('.login__form');
+            form.classList.add('show');
+
+
+
+
+        }, true);
+
+        document.addEventListener('click', e => {
+            if (e.target.closest('#btnLogout')) {
+                // here we know that we have pressed the logout button now we clear the localstorage
+                window.localStorage.clear();
+            }
+        }, true)
+
+        var storedUser = localStorage.getItem('currentUser');
+        if (storedUser) {
+            // User is active, update the header with the stored user information
+            document.getElementById('header').innerHTML = `
+  <p>Welcome, <span>${storedUser.replace(/['"]+/g, '')}</span> </p>
+  <button type="button" id="btnLogout" class="btn"><a href="/login.html" style="text-decoration:none;">Logout</a></button>
+  `;
+            // Add other header updates as needed
+        } else { alert("You are not logged in, please login to continue shoping", window.location.href = "/login.html") }
+        async function insersubmit(e) {
+            e.preventDefault();
+            //   We retrieve the username from localstorage if there is to update on our header
+            const name = document.getElementById('name').value
+            const description = document.getElementById('description').value
+            const color = document.getElementById('color').value
+            const image_url = document.getElementById('image_url').value
+            const model_url = document.getElementById('model_url').value
+
+
+            // We handle the logout button but first we check if there is a button on dom
+            try {
+                const response = await fetch('/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, description, color, image_url, model_url }),
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    // Check if the server response has a success property and display an alert
+                    if (responseData.success) {
+                        if (responseData.message.includes('update')) {
+                            alert('Data updated successfully',window.location.reload(true))
+                        } else if (responseData.message.includes('insert')) {
+                            alert('Data inserted successfully',window.location.reload(true))
+                        }
+
+                    }
+
+                } else {
+                    alert('Something went wrong, check form again')
+                }
+            } catch (error) {
+                console.error('Error during insertion:', error);
+            }
+
+        }
+
+        document.addEventListener('submit', insersubmit, true)
+    </script>
+
+
+
+</body>
+
+
+</html>
